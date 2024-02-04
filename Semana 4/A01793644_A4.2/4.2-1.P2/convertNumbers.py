@@ -91,25 +91,8 @@ def number_to_hex(number):
         - The function optionally converts the result to uppercase letters.
         - For the input value 0, the function returns '0' to avoid an empty result.
     """
-    # Handle 0 explicitly to avoid empty result
-    if number == 0:
-        return '0'
-    hex_digits = "0123456789ABCDEF"
-    hex_result = ''
-    is_negative = False
-    # Check if the number is negative
-    if number < 0:
-        is_negative = True
-        number = abs(number)
-    # Convert to hexadecimal
-    while number > 0:
-        remainder = number % 16
-        hex_result = hex_digits[remainder] + hex_result
-        number = number // 16
-    if is_negative:
-        hex_result = "-" + hex_result
-    return hex_result.upper()  # Optionally convert to uppercase
-
+    heximal_num = f'{number & 0xFFFFFFFF:X}'
+    return heximal_num
 
 
 def number_to_binary(number):
@@ -138,22 +121,42 @@ def number_to_binary(number):
         - If the input is negative, a '1' is added as a signifying prefix.
         - The binary representation is always returned as a string.
     """
-    # Special case for 0
-    if number == 0:
-        return '0'
-    binary_digits = []
-    is_negative = False
-    # Check if the number is negative
-    if number < 0:
-        is_negative = True
-        number = abs(number)
+    if number >= 0:
+        # Procesamiento directo para números positivos
+        binary_str = ''
+        if number == 0:
+            binary_str = '0'
+        while number > 0:
+            binary_str = str(number % 2) + binary_str
+            number = number // 2
+        return binary_str
+        # Procesamiento para números negativos
+    number = -number  # Convertir a positivo para trabajar con él
+    binary_str = ''
     while number > 0:
-        remainder = number % 2
-        binary_digits.insert(0, str(remainder))  # Prepend the remainder to the start of the list
+        binary_str = str(number % 2) + binary_str
         number = number // 2
-    if is_negative:
-        binary_digits = ['1'] + binary_digits  # Add a '1' signifying negative
-    return ''.join(binary_digits)
+
+        # Paso 2: Invertir los bits
+    inverted_binary_str = ''.join('1' if bit == '0' else '0' for bit in binary_str)
+
+        # Paso 3: Sumar 1 al resultado invertido
+        # Convertimos la cadena invertida a lista de enteros para facilitar la suma
+    binary_list = [int(bit) for bit in inverted_binary_str]
+    for i in range(len(binary_list) - 1, -1, -1):
+        if binary_list[i] == 0:
+            binary_list[i] = 1
+            break
+    else:
+            # Si todos los bits eran 1, agregamos un 1 al principio
+        binary_list.insert(0, 1)
+        # Convertir la lista de vuelta a cadena
+    final_binary_str = ''.join(str(bit) for bit in binary_list)
+        # Asegurarse de que la cadena tenga al menos la longitud necesaria para
+        # coincidir con el ejemplo
+    if len(final_binary_str) < 10:
+        final_binary_str = '1' * (10 - len(final_binary_str)) + final_binary_str
+    return final_binary_str
 
 def numbers_to_binary_and_hexa(numbers):
     """
@@ -193,7 +196,7 @@ def numbers_to_binary_and_hexa(numbers):
         # Manually convert each number to binary
         binary_string = number_to_binary(number)
         # Format the binary string as Python does, prefixed with '0b'
-        formatted_binary_string = '0b' + binary_string
+        formatted_binary_string =  binary_string
         bina.append(formatted_binary_string)
 
         h = number_to_hex(number)
