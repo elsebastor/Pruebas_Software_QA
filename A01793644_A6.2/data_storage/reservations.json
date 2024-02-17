@@ -1,0 +1,16 @@
+[
+    {
+        "reservation_id": 3,
+        "customer_id": 1,
+        "hotel_id": 1,
+        "room_number": 100,
+        "start_date": "2023-02-01",
+        "end_date": "2023-03-02"
+    },
+    {
+        "reservation_id": 1,
+        "hotel_id": 2,
+        "customer_id": 3,
+        "room_number": "sffd"
+    }
+]
